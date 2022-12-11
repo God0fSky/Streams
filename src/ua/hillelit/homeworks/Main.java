@@ -1,6 +1,7 @@
 package ua.hillelit.homeworks;
 
 import ua.hillelit.homeworks.entity.Product;
+import ua.hillelit.homeworks.entity.Type;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -12,17 +13,17 @@ import java.util.stream.Collectors;
 public class Main {
     public static void main(String[] args) {
         List<Product> productList = new ArrayList<>();
-        productList.add(new Product("Book", BigDecimal.valueOf(210), true,
+        productList.add(new Product(Type.BOOK, BigDecimal.valueOf(210), true,
                 LocalDate.of(2022, 1, 11)));
-        productList.add(new Product("NotBook", BigDecimal.valueOf(350), true,
+        productList.add(new Product(Type.TOY, BigDecimal.valueOf(350), true,
                 LocalDate.of(2022, 2, 21)));
-        productList.add(new Product("Book", BigDecimal.valueOf(70), false,
+        productList.add(new Product(Type.BOOK, BigDecimal.valueOf(70), false,
                 LocalDate.of(2022, 3, 1)));
-        productList.add(new Product("Book", BigDecimal.valueOf(500), true,
+        productList.add(new Product(Type.BOOK, BigDecimal.valueOf(500), true,
                 LocalDate.of(2021, 4, 17)));
-        productList.add(new Product("Book", BigDecimal.valueOf(195), true,
+        productList.add(new Product(Type.BOOK, BigDecimal.valueOf(195), true,
                 LocalDate.of(2021, 4, 15)));
-        productList.add(new Product("Book", BigDecimal.valueOf(50), false,
+        productList.add(new Product(Type.BOOK, BigDecimal.valueOf(50), false,
                 LocalDate.of(2022, 4, 16)));
 
         Product.getList(productList).stream()
@@ -55,9 +56,9 @@ public class Main {
 
         System.out.println();
 
+        Product.group(productList).entrySet().stream()
+                .peek(pr -> System.out.println(pr))
+                .collect(Collectors.toList());
 
-
-        /*Map<String, List<Product>> map = Product.groupToMap(productList);
-        map.entrySet().stream().forEach(System.out::println);*/
     }
 }

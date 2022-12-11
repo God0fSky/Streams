@@ -6,32 +6,34 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Product implements Comparable<Product> {
-    private String type;
+    private Type type;
     private BigDecimal price;
     private boolean sale;
     private LocalDate date;
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
-    public Product(String type, BigDecimal price) {
+    public Product(Type type, BigDecimal price) {
         this.type = type;
         this.price = price;
     }
 
-    public Product(String type, BigDecimal price, boolean sale) {
+    public Product(Type type, BigDecimal price, boolean sale) {
         this.type = type;
         this.price = price;
         this.sale = sale;
     }
 
-    public Product(String type, BigDecimal price, boolean sale, LocalDate date) {
+    public Product(Type type, BigDecimal price, boolean sale, LocalDate date) {
         this.type = type;
         this.price = price;
         this.sale = sale;
         this.date = date;
     }
+
+
 
     public BigDecimal getPrice() {
         return price;
@@ -51,14 +53,14 @@ public class Product implements Comparable<Product> {
 
     public static List<Product> getList(List<Product> list) {
         return list.stream()
-                .filter(coll -> coll.getType().equals("Book"))
+                .filter(coll -> coll.getType().equals(Type.BOOK))
                 .filter(pr -> pr.getPrice().compareTo(BigDecimal.valueOf(250)) > 0)
                 .collect(Collectors.toList());
     }
 
     public static List<Product> getSaleList(List<Product> list, BigDecimal saleValue) {
         return list.stream()
-                .filter(coll -> coll.getType().equals("Book"))
+                .filter(coll -> coll.getType().equals(Type.BOOK))
                 .filter(Product::isSale)
                 .peek(sl -> sl.setPrice(sl.getPrice().multiply(saleValue)))
                 .collect(Collectors.toList());
@@ -66,12 +68,12 @@ public class Product implements Comparable<Product> {
 
     public static Product getCheaperProduct(List<Product> list, BigDecimal saleValue) {
         boolean isBook = list.stream()
-                .noneMatch(coll -> "Book".equals(coll.getType()));
+                .noneMatch(coll -> Type.BOOK.equals(coll.getType()));
         if (!isBook) {
             throw new RuntimeException("Продукт категории 'Book' не найден");
         }
         return list.stream()
-                .filter(coll -> coll.getType().equals("Book"))
+                .filter(coll -> coll.getType().equals(Type.BOOK))
                 .filter(Product::isSale)
                 .peek(coll -> coll.setPrice(coll.getPrice().multiply(saleValue)))
                 .min(Product::compareTo).get();
@@ -79,7 +81,7 @@ public class Product implements Comparable<Product> {
 
     public static List<Product> getLastProducts(List<Product> list, BigDecimal saleValue) {
         return list.stream()
-                .filter(coll -> coll.getType().equals("Book"))
+                .filter(coll -> coll.getType().equals(Type.BOOK))
                 .filter(Product::isSale)
                 .peek(sl -> sl.setPrice(sl.getPrice().multiply(saleValue)))
                 .sorted()
@@ -95,6 +97,18 @@ public class Product implements Comparable<Product> {
                 .collect(Collectors.toList());
     }
 
+    public static Map<Type, List<Product>> group(List<Product> arrayList) {
+        Map<Type, List<Product>> map = arrayList.stream()
+                .collect(Collectors.groupingBy(
+                    Product::getType
+                ));
+        return map;
+    }
+
+    @Override
+    public int compareTo(Product o) {
+        return o.date.compareTo(date);
+    }
 
     @Override
     public String toString() {
@@ -106,8 +120,4 @@ public class Product implements Comparable<Product> {
                 '}';
     }
 
-    @Override
-    public int compareTo(Product o) {
-        return o.date.compareTo(date);
-    }
 }
